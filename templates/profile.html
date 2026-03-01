@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Профиль{% endblock %}
+
+{% block content %}
+<div class="profile-page">
+    <h1>Личный кабинет</h1>
+
+    <div class="profile-sections">
+        <section class="current-orders">
+            <h2>Текущие заказы</h2>
+            <div class="orders-grid">
+                <div class="order-card">
+                    <h3>Заказ №12345</h3>
+                    <p class="order-date">от 10.03.2026</p>
+                    <p class="order-status status-delivery"> В пути</p>
+                    <ul>
+                        <li>Футболка - 2 шт</li>
+                        <li>Джинсы - 1 шт</li>
+                    </ul>
+                    <p class="order-total">Сумма: 5000</p>
+                </div>
+
+                <div class="order-card">
+                    <h3>Заказ №12346</h3>
+                    <p class="order-date">от 12.03.2026</p>
+                    <p class="order-status status-processing"> Собирается</p>
+                    <ul>
+                        <li>Куртка демисезонная - 1 шт</li>
+                    </ul>
+                    <p class="order-total">Сумма: 5000</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="past-orders">
+            <h2>Прошлые заказы</h2>
+            <table class="orders-table">
+                <thead>
+                    <tr><th>№ заказа</th><th>Дата</th><th>Сумма</th><th>Статус</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>12340</td><td>01.03.2026</td><td>111</td><td> Доставлен</td></tr>
+                    <tr><td>12335</td><td>25.02.2026</td><td>22222</td><td> Доставлен</td></tr>
+                    <tr><td>12330</td><td>15.02.2026</td><td>333</td><td> Доставлен</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="settings">
+            <h2>Настройки</h2>
+
+            <form method="POST" class="settings-form">
+                {{ form.hidden_tag() }}
+
+                <div class="settings-section">
+                    <h3> Адреса доставки</h3>
+                    <div class="address-card">
+                        <input type="radio" name="default_address" id="addr1" checked>
+                        <label for="addr1">n адресс)</label>
+                    </div>
+                    <div class="address-card">
+                        <input type="radio" name="default_address" id="addr2">
+                        <label for="addr2">n фдресс</label>
+                    </div>
+                    <button class="btn-small">+ Добавить адрес</button>
+                </div>
+
+                <div class="settings-section">
+                    <h3> Способы оплаты</h3>
+                    <div class="payment-card">
+                        <input type="radio" name="default_payment" id="pay1" checked>
+                        <label for="pay1">Карта *1234 (основная)</label>
+                    </div>
+                    <div class="payment-card">
+                        <input type="radio" name="default_payment" id="pay2">
+                        <label for="pay2">Карта *5678</label>
+                    </div>
+                    <button class="btn-small">+ Добавить карту</button>
+                </div>
+
+                <div class="settings-section">
+                    <h3> Прочие настройки</h3>
+                    <label><input type="checkbox"> Получать новости о скидках</label><br>
+                    <label><input type="checkbox"> Сохранять историю просмотров</label>
+                </div>
+
+                <div class="form-group">
+                    <button class="btn" disabled>Сохранить настройки</button>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+{% endblock %}

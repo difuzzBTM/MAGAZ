@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Каталог одежды{% endblock %}
+
+{% block content %}
+<div class="main-page">
+    <div class="search-filter-row">
+        <div class="search-box">
+            <input type="text" placeholder="Поле ввода по названию" class="search-input">
+            <button class="btn">Поиск</button>
+        </div>
+
+        <div class="filters">
+            <details>
+                <summary>Фильтры</summary>
+                <form method="GET" class="filter-form">
+                    {{ form.hidden_tag() if form.hidden_tag }}
+
+                    <div class="filter-group">
+                        <label>Категория:</label>
+                        <select>
+                            <option>Вся одежда</option>
+                            <option>Футболки</option>
+                            <option>Джинсы</option>
+                            <option>Платья</option>
+                            <option>Куртки</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Размер:</label>
+                        <select>
+                            <option>Все размеры</option>
+                            <option>XS</option>
+                            <option>S</option>
+                            <option>M</option>
+                            <option>L</option>
+                            <option>XL</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Цена:</label>
+                        <input type="number" placeholder="от">
+                        <input type="number" placeholder="до">
+                    </div>
+
+                    <button type="submit" class="btn">Применить</button>
+                </form>
+            </details>
+        </div>
+    </div>
+
+
+    <!-- Карточки товаров (одежда) -->
+    <h2>Новинки</h2>
+    <div class="product-grid">
+        <div class="product-card">
+            <img src="https://via.placeholder.com/250x250/f0f0f0/cccccc?text=+Футболка" alt="Футболка">
+            <h3>Футболка</h3>
+            <p class="price">1990</p>
+            <p class="size">Размеры: S, M, L</p>
+            <button class="btn" disabled>В корзину</button>
+        </div>
+
+        <div class="product-card">
+            <img src="https://via.placeholder.com/250x250/f0f0f0/cccccc?text=+Джинсы" alt="Джинсы">
+            <h3>Джинсы</h3>
+            <p class="price">3490</p>
+            <p class="size">Размеры: 28-34</p>
+            <button class="btn" disabled>В корзину</button>
+        </div>
+
+        <div class="product-card">
+            <img src="https://via.placeholder.com/250x250/f0f0f0/cccccc?text=+Платье" alt="Платье">
+            <h3>Платье</h3>
+            <p class="price">2990</p>
+            <p class="size">Размеры: XS, S, M</p>
+            <button class="btn" disabled>В корзину</button>
+        </div>
+
+        <div class="product-card">
+            <img src="https://via.placeholder.com/250x250/f0f0f0/cccccc?text=+Куртка" alt="Куртка">
+            <h3>Куртка</h3>
+            <p class="price">5 990 ₽</p>
+            <p class="size">Размеры: M, L, XL</p>
+            <button class="btn" disabled>В корзину</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
