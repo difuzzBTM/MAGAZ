@@ -33,10 +33,7 @@ class ResetPasswordForm(FlaskForm):
 class ProductFilterForm(FlaskForm):
     search = StringField('Поиск', validators=[Optional()])
     category = SelectField('Категория', choices=[
-        ('all', 'Все категории'),
-        ('phones', 'Смартфоны'),
-        ('laptops', 'Ноутбуки'),
-        ('audio', 'Аудиотехника')
+        ('all', 'Все категории')
     ], validators=[Optional()])
     price_min = FloatField('Цена от', validators=[Optional(), NumberRange(min=0)])
     price_max = FloatField('Цена до', validators=[Optional(), NumberRange(min=0)])
