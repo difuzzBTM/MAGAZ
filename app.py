@@ -4,9 +4,9 @@ from forms import (LoginForm, RegisterForm, ResetPasswordForm,
                   ProfileEditForm, ChangePasswordForm)
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'supersecretkey-for-wtf-forms-2026'  # обязательный ключ для CSRF-защиты
+app.config['SECRET_KEY'] = 'yandexlyceum_secret_key123'
 
-#Маршруты для всех страниц
+
 
 @app.route('/')
 @app.route('/main')
