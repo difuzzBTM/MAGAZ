@@ -1,0 +1,200 @@
+/* Сброс отступов */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+/* Базовые настройки */
+body {
+    font-family: Arial;
+    background: gray;
+    padding: 10px;
+}
+
+/* Шапка и подвал */
+header, footer {
+    background: black;
+    color: white;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+footer {
+    text-align: center;
+}
+
+/* Основной блок */
+main {
+    background: white;
+    padding: 10px;
+    border: 1px solid gray;
+}
+
+/* Заголовки */
+h1 {
+    margin: 10px 0;
+    font-size: 24px;
+}
+
+/* Формы */
+form {
+    max-width: 500px;
+}
+
+label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+    border: 1px solid gray;
+}
+
+button, .btn {
+    background: black;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+}
+
+/* Ссылки */
+a {
+    color: black;
+}
+
+/* Таблицы */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+}
+
+th, td {
+    border: 1px solid gray;
+    padding: 5px;
+}
+
+th {
+    background: #eee;
+}
+
+/* Карточки товаров */
+.product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.product-card {
+    width: 200px;
+    border: 1px solid gray;
+    padding: 10px;
+}
+
+.product-card img {
+    width: 100%;
+    height: 120px;
+    background: #eee;
+}
+
+/* Страница товара */
+.product-detail {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.product-image {
+    width: 300px;
+}
+
+.product-image img {
+    width: 100%;
+}
+
+/* Профиль */
+.profile {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin: 20px 0;
+}
+
+.avatar img {
+    width: 150px;
+    height: 150px;
+    background: #eee;
+}
+
+/* Корзина */
+.cart-total {
+    text-align: right;
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+/* Статус заказа */
+.progress {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
+.step {
+    width: 30px;
+    height: 30px;
+    border: 2px solid gray;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+}
+
+.step.completed {
+    background: green;
+    border-color: green;
+    color: white;
+}
+
+.step.active {
+    border-color: blue;
+}
+
+/* Фильтры */
+.filter-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 10px 0;
+}
+
+.filter-group {
+    flex: 1 1 150px;
+}
+
+/* Ошибки */
+.errors {
+    color: red;
+    font-size: 12px;
+    margin: 5px 0;
+}
+
+/* Поля форм */
+.form-control {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid gray;
+}
+
+.radio-group {
+    margin: 10px 0;
+}
+
+.radio-item {
+    margin: 5px 0;
+}

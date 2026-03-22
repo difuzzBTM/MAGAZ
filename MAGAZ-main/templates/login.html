@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Вход{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <h1>Вход</h1>
+
+    <form method="POST" class="simple-form">
+        {{ form.hidden_tag() }}
+
+        <div class="form-group">
+            <label>{{ form.email.label }}</label>
+            {{ form.email(class="form-control", placeholder="your@email.com") }}
+        </div>
+
+        <div class="form-group">
+            <label>{{ form.password.label }}</label>
+            {{ form.password(class="form-control", placeholder="••••••••") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.submit(class="btn") }}
+        </div>
+    </form>
+
+    <div class="form-links">
+        <p><a href="#">Забыли пароль?</a></p>
+        <p><a href="#">Регистрация</a></p>
+    </div>
+</div>
+{% endblock %}
