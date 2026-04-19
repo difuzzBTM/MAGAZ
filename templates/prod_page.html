@@ -1,43 +1,38 @@
 {% extends "base.html" %}
 
-{% block title %}Товар - Футболка{% endblock %}
+{% block title %}{{ product.name }}{% endblock %}
 
 {% block content %}
 <div class="product-detail">
     <div class="product-images">
-        <img src="https://via.placeholder.com/400x400/f0f0f0/cccccc?text=+Фото+товара" alt="Футболка" class="main-image">
+        {% set photos = product.photos.split(',') if product.photos else [] %}
+        <img src="{{ photos[0] if photos else 'https://via.placeholder.com/400x400/f0f0f0/cccccc?text=Нет+фото' }}" alt="{{ product.name }}" class="main-image">
         <div class="thumbnails">
-            <img src="https://via.placeholder.com/80x80/f0f0f0/cccccc?text=1">
-            <img src="https://via.placeholder.com/80x80/f0f0f0/cccccc?text=2">
-            <img src="https://via.placeholder.com/80x80/f0f0f0/cccccc?text=3">
+            {% for photo in photos[1:] %}
+                <img src="{{ photo }}" alt="Фото {{ loop.index }}">
+            {% endfor %}
         </div>
     </div>
 
     <div class="product-info">
-        <h1>Футболка хлопковая</h1>
+        <h1>{{ product.name }}</h1>
 
         <div class="price-section">
-            <span class="price">1 990 ₽</span>
+            <span class="price">{{ product.cost }} ₽</span>
         </div>
 
         <div class="size-section">
             <h3>Размеры:</h3>
             <div class="size-buttons">
-                <span class="size-option">XS</span>
-                <span class="size-option selected">S</span>
-                <span class="size-option">M</span>
-                <span class="size-option">L</span>
-                <span class="size-option">XL</span>
+                {% for ps in product.product_sizes %}
+                    <span class="size-option">{{ ps.size.name }}</span>
+                {% endfor %}
             </div>
         </div>
 
         <div class="description-section">
             <h3>Описание</h3>
-            <p class="description">
-                описание
-            </p>
-            <p><strong>Состав:</strong> хлопок</p>
-            <p><strong>Страна производства:</strong> Россия</p>
+            <p class="description">{{ product.description or 'Описание отсутствует' }}</p>
         </div>
 
         <form method="POST" class="add-to-cart-form">
@@ -49,7 +44,7 @@
             </div>
 
             <div class="form-group">
-                {{ form.submit(class="btn btn-large", disabled=True) }}
+                {{ form.submit(class="btn btn-large") }}
             </div>
         </form>
     </div>

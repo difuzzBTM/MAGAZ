@@ -5,87 +5,67 @@
 {% block content %}
 <div class="main-page">
     <div class="search-filter-row">
-        <div class="search-box">
-            <input type="text" placeholder="Поле ввода по названию" class="search-input">
-            <button class="btn">Поиск</button>
-        </div>
+        <form method="GET" class="filter-form" id="filter-form">
+            <div class="search-box">
+                {{ form.search(class="search-input", placeholder="Поиск по названию") }}
+                <button type="submit" class="btn">Поиск</button>
+            </div>
 
-        <div class="filters">
             <details>
                 <summary>Фильтры</summary>
-                <form method="GET" class="filter-form">
-                    {{ form.hidden_tag() if form.hidden_tag }}
+                <div class="filters">
+                    {{ form.hidden_tag() }}
 
                     <div class="filter-group">
-                        <label>Категория:</label>
-                        <select>
-                            <option>Вся одежда</option>
-                            <option>Футболки</option>
-                            <option>Джинсы</option>
-                            <option>Платья</option>
-                            <option>Куртки</option>
-                        </select>
+                        {{ form.category.label }}
+                        {{ form.category(class="form-control") }}
                     </div>
 
                     <div class="filter-group">
-                        <label>Размер:</label>
-                        <select>
-                            <option>Все размеры</option>
-                            <option>XS</option>
-                            <option>S</option>
-                            <option>M</option>
-                            <option>L</option>
-                            <option>XL</option>
-                        </select>
+                        {{ form.size.label }}
+                        {{ form.size(class="form-control") }}
                     </div>
 
                     <div class="filter-group">
                         <label>Цена:</label>
-                        <input type="number" placeholder="от">
-                        <input type="number" placeholder="до">
+                        {{ form.price_min(class="form-control", placeholder="от") }}
+                        {{ form.price_max(class="form-control", placeholder="до") }}
                     </div>
 
-                    <button type="submit" class="btn">Применить</button>
-                </form>
+                    <div class="filter-group">
+                        {{ form.sort.label }}
+                        {{ form.sort(class="form-control") }}
+                    </div>
+
+                    <div class="filter-buttons">
+                        <button type="submit" class="btn">Применить фильтры</button>
+                        <a href="{{ url_for('main') }}" class="btn btn-secondary">Сбросить фильтры</a>
+                    </div>
+                </div>
             </details>
-        </div>
+        </form>
     </div>
 
-
-    <!-- Карточки товаров (одежда) -->
-    <h2>Новинки</h2>
+    <h2>Товары</h2>
     <div class="product-grid">
-        <div class="product-card">
-            <img src="https://via.placeholder.com/250x250/f0f0f0/cccccc?text=+Футболка" alt="Футболка">
-            <h3>Футболка</h3>
-            <p class="price">1990</p>
-            <p class="size">Размеры: S, M, L</p>
-            <button class="btn" disabled>В корзину</button>
-        </div>
-
-        <div class="product-card">
-            <img src="https://via.placeholder.com/250x250/f0f0f0/cccccc?text=+Джинсы" alt="Джинсы">
-            <h3>Джинсы</h3>
-            <p class="price">3490</p>
-            <p class="size">Размеры: 28-34</p>
-            <button class="btn" disabled>В корзину</button>
-        </div>
-
-        <div class="product-card">
-            <img src="https://via.placeholder.com/250x250/f0f0f0/cccccc?text=+Платье" alt="Платье">
-            <h3>Платье</h3>
-            <p class="price">2990</p>
-            <p class="size">Размеры: XS, S, M</p>
-            <button class="btn" disabled>В корзину</button>
-        </div>
-
-        <div class="product-card">
-            <img src="https://via.placeholder.com/250x250/f0f0f0/cccccc?text=+Куртка" alt="Куртка">
-            <h3>Куртка</h3>
-            <p class="price">5 990 ₽</p>
-            <p class="size">Размеры: M, L, XL</p>
-            <button class="btn" disabled>В корзину</button>
-        </div>
+        {% if products %}
+            {% for product in products %}
+            <div class="product-card">
+                <img src="{{ product.photos.split(',')[0] if product.photos else 'https://via.placeholder.com/250x250/f0f0f0/cccccc?text=Нет+фото' }}" alt="{{ product.name }}">
+                <h3>{{ product.name }}</h3>
+                <p class="price">{{ product.cost }} ₽</p>
+                <p class="size">
+                    Размеры:
+                    {% for ps in product.product_sizes %}
+                        {{ ps.size.name }}{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </p>
+                <a href="{{ url_for('prod', id=product.id) }}" class="btn">Подробнее</a>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>Товары не найдены</p>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

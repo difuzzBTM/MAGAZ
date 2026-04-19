@@ -10,9 +10,15 @@
     <header>
         <h1>Мой магазин</h1>
         <nav>
-            <span>Главная</span> |
-            <span>Корзина</span> |
-            <span>Профиль</span>
+            <a href="{{ url_for('main') }}">Главная</a> |
+            <a href="{{ url_for('cart') }}">Корзина</a> |
+            {% if session.user_id %}
+                <a href="{{ url_for('profile') }}">Профиль</a> |
+                <a href="{{ url_for('logout') }}">Выход</a>
+            {% else %}
+                <a href="{{ url_for('login') }}">Вход</a> |
+                <a href="{{ url_for('register') }}">Регистрация</a>
+            {% endif %}
         </nav>
     </header>
 

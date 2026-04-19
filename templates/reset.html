@@ -14,16 +14,12 @@
             {{ form.email(class="form-control", placeholder="your@email.com") }}
         </div>
 
-        <div class="form-group">
-            <label>{{ form.username.label }}</label>
-            {{ form.username(class="form-control", placeholder="Ваше имя пользователя") }}
-        </div>
 
         <div class="form-group">
-            <button class="btn">Восстановить пароль</button>
+            {{ form.submit(class="btn") }}
         </div>
     </form>
 
-    <p class="form-note">Введите почту и имя пользователя для проверки</p>
+    <p class="form-note">Введите почту для отправки инструкций по сбросу пароля</p>
 </div>
 {% endblock %}

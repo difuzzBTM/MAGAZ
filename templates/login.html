@@ -25,8 +25,8 @@
     </form>
 
     <div class="form-links">
-        <p><a href="#">Забыли пароль?</a></p>
-        <p><a href="#">Регистрация</a></p>
+        <p><a href="{{ url_for('reset') }}">Забыли пароль?</a></p>
+        <p><a href="{{ url_for('register') }}">Регистрация</a></p>
     </div>
 </div>
 {% endblock %}

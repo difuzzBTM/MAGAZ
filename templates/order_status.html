@@ -4,13 +4,13 @@
 
 {% block content %}
 <div class="order-status-page">
-    <h1>Статус заказа №12345</h1>
+    <h1>Статус заказа №{{ order.id }}</h1>
 
     <div class="status-layout">
         <div class="map-section">
             <h2>Карта доставки</h2>
             <div class="map-placeholder">
-                <p class="map-note">г. Москва, ул. Пушкина, д. 10(еще карта будет от static map)</p>
+                <p class="map-note">{{ order.address|default('Адрес доставки') }}</p>
             </div>
         </div>
 
@@ -20,32 +20,28 @@
             <div class="info-card">
                 <h3>Статус доставки</h3>
                 <div class="progress">
-                    <div class="step completed">.</div>
-                    <div class="step completed">.</div>
-                    <div class="step active">3</div>
-                    <div class="step">4</div>
+                    {# индикатор прогресса по статусу #}
                 </div>
-                <p class="current-status">Текущий этап: Курьер выехал</p>
+                <p class="current-status">Текущий этап: {{ order.status_text|default('Неизвестно') }}</p>
             </div>
 
             <div class="info-card">
                 <h3>Детали заказа</h3>
                 <table class="order-details">
-                    <tr><td>Номер заказа:</td><td>12345</td></tr>
-                    <tr><td>Дата заказа:</td><td>дата</td></tr>
-                    <tr><td>Сумма:</td><td>111</td></tr>
-                    <tr><td>Способ оплаты:</td><td>Карта онлайн</td></tr>
-                    <tr><td>Адрес доставки:</td><td>aдремс</td></tr>
-                    <tr><td>Курьер:</td><td>Иван ( +7 (999) 123-45-67 )</td></tr>
+                    <tr><td>Номер заказа:</td><td>{{ order.id }}</td></tr>
+                    <tr><td>Дата заказа:</td><td>{{ order.created_at|date_format }}</td></tr>
+                    <tr><td>Сумма:</td><td>{{ order.total }} ₽</td></tr>
+                    <tr><td>Способ оплаты:</td><td>{{ order.payment_method }}</td></tr>
+                    <tr><td>Адрес доставки:</td><td>{{ order.address }}</td></tr>
+                    <tr><td>Курьер:</td><td>{{ order.courier_name|default('Не назначен') }} {{ order.courier_phone|default('') }}</td></tr>
                 </table>
             </div>
 
             <div class="info-card">
                 <h3>Состав заказа</h3>
                 <ul class="order-items">
-                    <li>Футболка  (M) × 2 — 322 </li>
-                    <li>Джинсы (30) × 1 — 3</li>
-                    <li>Куртка(L) × 1 — 599</li>
+                    {# цикл по позициям заказа #}
+                    <li>Нет данных о товарах</li>
                 </ul>
             </div>
         </div>

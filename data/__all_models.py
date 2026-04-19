@@ -1,8 +1,7 @@
-# models.py
 from sqlalchemy import Column, Integer, String, Float, Text, ForeignKey
 from sqlalchemy.orm import relationship
-from db_session import SqlAlchemyBase
-
+from data.db_session import SqlAlchemyBase
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class ProductType(SqlAlchemyBase):
     __tablename__ = 'product_types'
@@ -73,6 +72,12 @@ class Person(SqlAlchemyBase):
     shop = relationship("Shop", back_populates="persons")
     carts = relationship("Cart", back_populates="person")
     orders = relationship("Order", back_populates="person")
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
 
 

@@ -7,60 +7,13 @@
     <h1>Корзина</h1>
 
     <div class="cart-layout">
-        <!-- Левая колонка: список товаров -->
         <div class="cart-items">
             <h2>Список товаров</h2>
 
-            <div class="cart-item">
-                <img src="https://via.placeholder.com/80x80/f0f0f0/cccccc?text=" alt="Товар">
-                <div class="item-details">
-                    <h3>Футболка</h3>
-                    <p>Размер: M</p>
-                    <p>Цена:1111</p>
-                </div>
-                <div class="item-quantity">
-                    <input type="number" value="2" min="1" max="10" class="quantity-input">
-                </div>
-                <div class="item-total">
-                    <strong>1111</strong>
-                </div>
-                <button class="remove-btn">Х</button>
-            </div>
-
-            <div class="cart-item">
-                <img src="https://via.placeholder.com/80x80/f0f0f0/cccccc?text=" alt="Товар">
-                <div class="item-details">
-                    <h3>Джинсы прямые</h3>
-                    <p>Размер: 30</p>
-                    <p>Цена: 3 490 ₽</p>
-                </div>
-                <div class="item-quantity">
-                    <input type="number" value="1" min="1" max="10" class="quantity-input">
-                </div>
-                <div class="item-total">
-                    <strong>3 490 ₽</strong>
-                </div>
-                <button class="remove-btn">✖</button>
-            </div>
-
-            <div class="cart-item">
-                <img src="https://via.placeholder.com/80x80/f0f0f0/cccccc?text=" alt="Товар">
-                <div class="item-details">
-                    <h3>Куртка демисезонная</h3>
-                    <p>Размер: L</p>
-                    <p>Цена:1111 ₽</p>
-                </div>
-                <div class="item-quantity">
-                    <input type="number" value="1" min="1" max="10" class="quantity-input">
-                </div>
-                <div class="item-total">
-                    <strong>1111 ₽</strong>
-                </div>
-                <button class="remove-btn">Х</button>
-            </div>
+            {# Здесь будет цикл по товарам корзины #}
+            <p class="empty-cart-message">Ваша корзина пуста</p>
         </div>
 
-        <!-- Правая колонка: оформление -->
         <div class="checkout-section">
             <h2>Оформление заказа</h2>
 
@@ -69,31 +22,31 @@
 
                 <div class="form-group">
                     <label>Куда доставить:</label>
-                    <input type="text" placeholder="Город" class="form-control">
-                    <input type="text" placeholder="Улица, дом, квартира" class="form-control">
-                    <input type="text" placeholder="Почтовый индекс" class="form-control">
+                    <input type="text" name="city" placeholder="Город" class="form-control">
+                    <input type="text" name="address" placeholder="Улица, дом, квартира" class="form-control">
+                    <input type="text" name="postal_code" placeholder="Почтовый индекс" class="form-control">
                 </div>
 
                 <div class="form-group">
                     <label>Как оплатить:</label>
                     <div class="radio-group">
-                        <label><input type="radio" name="payment" checked> Картой</label>
-                        <label><input type="radio" name="payment"> Наличными</label>
+                        <label><input type="radio" name="payment_method" value="card" checked> Картой</label>
+                        <label><input type="radio" name="payment_method" value="cash"> Наличными</label>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Контактные данные:</label>
-                    <input type="tel" placeholder="Телефон" class="form-control">
-                    <input type="email" placeholder="Email" class="form-control">
+                    <input type="tel" name="phone" placeholder="Телефон" class="form-control">
+                    <input type="email" name="email" placeholder="Email" class="form-control">
                 </div>
 
                 <div class="cart-total">
-                    <h3>Итоговая сумма: <span class="total-amount">13</span></h3>
+                    <h3>Итоговая сумма: <span class="total-amount">0 ₽</span></h3>
                 </div>
 
                 <div class="form-group">
-                    <button class="btn btn-large" disabled>Оплатить</button>
+                    <button type="submit" class="btn btn-large">Оплатить</button>
                 </div>
             </form>
         </div>

@@ -4,7 +4,7 @@ from wtforms import StringField, PasswordField, EmailField, SubmitField, Integer
 from wtforms.validators import DataRequired, Email, Length, EqualTo, NumberRange, Optional
 
 
-# Формы для пользовательской части
+#пользователь
 
 class LoginForm(FlaskForm):
     email = EmailField('Email',
@@ -28,15 +28,19 @@ class ResetPasswordForm(FlaskForm):
     submit = SubmitField('Отправить ссылку для сброса')
 
 
-#Формы для товаров и заказов
 
 class ProductFilterForm(FlaskForm):
     search = StringField('Поиск', validators=[Optional()])
-    category = SelectField('Категория', choices=[
-        ('all', 'Все категории')
-    ], validators=[Optional()])
+    category = SelectField('Категория', choices=[('', 'Все категории')], validators=[Optional()])
+    size = SelectField('Размер', choices=[('', 'Все размеры')], validators=[Optional()])
     price_min = FloatField('Цена от', validators=[Optional(), NumberRange(min=0)])
     price_max = FloatField('Цена до', validators=[Optional(), NumberRange(min=0)])
+    sort = SelectField('Сортировка', choices=[
+        ('name_asc', 'Название (А-Я)'),
+        ('name_desc', 'Название (Я-А)'),
+        ('price_asc', 'Цена (по возрастанию)'),
+        ('price_desc', 'Цена (по убыванию)'),
+    ], validators=[Optional()])
     submit = SubmitField('Применить')
 
 
@@ -62,7 +66,7 @@ class CheckoutForm(FlaskForm):
     submit = SubmitField('Оплатить')
 
 
-# Формы для профиля
+#профиль
 
 class ProfileEditForm(FlaskForm):
     name = StringField('Имя', validators=[DataRequired(), Length(min=2, max=50)])

@@ -12,7 +12,6 @@ def global_init(db_file):
     if __factory:
         return
 
-
     if not db_file or not db_file.strip():
         raise Exception("Необходимо указать файл базы данных.")
 
@@ -33,7 +32,4 @@ def create_session():
     if not __factory:
         raise Exception("База данных не инициализирована. Сначала вызовите global_init().")
 
-    return __factory
-
-
-
+    return __factory()

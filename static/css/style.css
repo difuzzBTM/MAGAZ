@@ -1,17 +1,15 @@
-/* Сброс отступов */
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
-/* Базовые настройки */
 body {
-    font-family: Arial;
+    font-family: Arial, sans-serif;
     background: gray;
     padding: 10px;
 }
 
-/* Шапка и подвал */
 header, footer {
     background: black;
     color: white;
@@ -23,20 +21,33 @@ footer {
     text-align: center;
 }
 
-/* Основной блок */
+header nav a {
+    color: white;
+    padding: 8px 12px;
+    border: 1px solid transparent;
+    text-decoration: none;
+}
+
+header nav a:hover {
+    border: 1px solid white;
+    background-color: transparent;
+}
+
 main {
     background: white;
     padding: 10px;
     border: 1px solid gray;
 }
 
-/* Заголовки */
 h1 {
     margin: 10px 0;
     font-size: 24px;
 }
 
-/* Формы */
+a {
+    color: black;
+}
+
 form {
     max-width: 500px;
 }
@@ -46,26 +57,89 @@ label {
     margin: 10px 0 5px;
 }
 
-input, select, textarea {
+input, select, textarea, .form-control {
     width: 100%;
     padding: 5px;
     margin-bottom: 10px;
     border: 1px solid gray;
 }
 
-button, .btn {
-    background: black;
-    color: white;
-    padding: 5px 10px;
-    border: none;
+.radio-group {
+    margin: 10px 0;
 }
 
-/* Ссылки */
-a {
+.radio-item {
+    margin: 5px 0;
+}
+
+.errors {
+    color: red;
+    font-size: 12px;
+    margin: 5px 0;
+}
+
+/* все кнопки. для кого я вообще комментарии пишу фхаххаха */
+button,
+.btn,
+input[type="submit"],
+input[type="button"],
+a.btn,
+.product-card .btn,
+.filter-buttons .btn,
+.add-to-cart-form .btn,
+.checkout-form .btn,
+.settings-form .btn,
+.simple-form .btn {
+    display: inline-block;
+    padding: 8px 16px;
+    margin: 4px 2px;
+    background-color: #f0f0f0;
     color: black;
+    border: 1px solid #888;
+    border-radius: 4px;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
 }
 
-/* Таблицы */
+button:hover,
+.btn:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+a.btn:hover {
+    background-color: #333;
+    color: white;
+    border-color: #333;
+}
+
+button:disabled,
+.btn:disabled,
+input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+
+.btn-secondary {
+    background-color: #ddd;
+    color: black;
+    border: 1px solid #aaa;
+}
+
+.btn-secondary:hover {
+    background-color: #555;
+    color: white;
+}
+
+.filter-buttons {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -81,7 +155,7 @@ th {
     background: #eee;
 }
 
-/* Карточки товаров */
+/* карт товаров */
 .product-grid {
     display: flex;
     flex-wrap: wrap;
@@ -101,7 +175,7 @@ th {
     background: #eee;
 }
 
-/* Страница товара */
+/* товар */
 .product-detail {
     display: flex;
     gap: 20px;
@@ -116,7 +190,7 @@ th {
     width: 100%;
 }
 
-/* Профиль */
+/* профиль */
 .profile {
     display: flex;
     gap: 20px;
@@ -130,14 +204,12 @@ th {
     background: #eee;
 }
 
-/* Корзина */
 .cart-total {
     text-align: right;
     font-size: 18px;
     margin: 10px 0;
 }
 
-/* Статус заказа */
 .progress {
     display: flex;
     justify-content: space-between;
@@ -165,7 +237,6 @@ th {
     border-color: blue;
 }
 
-/* Фильтры */
 .filter-row {
     display: flex;
     gap: 10px;
@@ -175,26 +246,4 @@ th {
 
 .filter-group {
     flex: 1 1 150px;
-}
-
-/* Ошибки */
-.errors {
-    color: red;
-    font-size: 12px;
-    margin: 5px 0;
-}
-
-/* Поля форм */
-.form-control {
-    width: 100%;
-    padding: 5px;
-    border: 1px solid gray;
-}
-
-.radio-group {
-    margin: 10px 0;
-}
-
-.radio-item {
-    margin: 5px 0;
 }
