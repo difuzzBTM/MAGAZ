@@ -8,47 +8,35 @@
 
     <div class="cart-layout">
         <div class="cart-items">
-            <h2>Список товаров</h2>
-
-            {# Здесь будет цикл по товарам корзины #}
-            <p class="empty-cart-message">Ваша корзина пуста</p>
-        </div>
-
-        <div class="checkout-section">
-            <h2>Оформление заказа</h2>
-
-            <form method="POST" class="checkout-form">
-                {{ form.hidden_tag() }}
-
-                <div class="form-group">
-                    <label>Куда доставить:</label>
-                    <input type="text" name="city" placeholder="Город" class="form-control">
-                    <input type="text" name="address" placeholder="Улица, дом, квартира" class="form-control">
-                    <input type="text" name="postal_code" placeholder="Почтовый индекс" class="form-control">
-                </div>
-
-                <div class="form-group">
-                    <label>Как оплатить:</label>
-                    <div class="radio-group">
-                        <label><input type="radio" name="payment_method" value="card" checked> Картой</label>
-                        <label><input type="radio" name="payment_method" value="cash"> Наличными</label>
+            <h2>Ваши товары</h2>
+            {% if cart_items %}
+                {% for item in cart_items %}
+                <div class="cart-item">
+                    <img src="{{ item.product.photos.split(',')[0] if item.product.photos else 'https://via.placeholder.com/80x80' }}" alt="{{ item.product.name }}">
+                    <div class="item-details">
+                        <h3>{{ item.product.name }}</h3>
+                        <p>Размер: {{ item.size.name }}</p>
+                        <p>Цена: {{ item.product.cost }} ₽</p>
                     </div>
+                    <div class="item-quantity">
+                        <form method="POST" action="{{ url_for('update_cart', cart_id=item.id) }}">
+                            <input type="number" name="quantity" value="{{ item.amount }}" min="1" max="10" class="quantity-input">
+                            <button type="submit" class="btn-small">Обновить</button>
+                        </form>
+                    </div>
+                    <div class="item-total">
+                        <strong>{{ item.product.cost * item.amount }} ₽</strong>
+                    </div>
+                    <a href="{{ url_for('remove_from_cart', cart_id=item.id) }}" class="remove-btn">✖</a>
                 </div>
-
-                <div class="form-group">
-                    <label>Контактные данные:</label>
-                    <input type="tel" name="phone" placeholder="Телефон" class="form-control">
-                    <input type="email" name="email" placeholder="Email" class="form-control">
-                </div>
-
+                {% endfor %}
                 <div class="cart-total">
-                    <h3>Итоговая сумма: <span class="total-amount">0 ₽</span></h3>
+                    <h3>Итого: {{ total }} ₽</h3>
                 </div>
-
-                <div class="form-group">
-                    <button type="submit" class="btn btn-large">Оплатить</button>
-                </div>
-            </form>
+                <a href="{{ url_for('checkout') }}" class="btn">Оформить заказ</a>
+            {% else %}
+                <p>Корзина пуста</p>
+            {% endif %}
         </div>
     </div>
 </div>

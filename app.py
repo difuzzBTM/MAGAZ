@@ -3,8 +3,9 @@ from forms import (LoginForm, RegisterForm, ResetPasswordForm,
                   ProductFilterForm, AddToCartForm, CheckoutForm,
                   ProfileEditForm, ChangePasswordForm)
 from data.db_session import global_init, create_session
-from data.__all_models import Person
-from data.__all_models import Product, ProductType, Size, ProductSize
+from data.__all_models import  ProductType, ProductSize, Person, Product, Size, Cart, Order, PaymentType, OrderType, OrderItem, UserPaymentMethod, UserAddress
+from flask import flash
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key123'
 
@@ -146,17 +147,253 @@ def prod(id):
     return render_template('prod_page.html', product=product, form=form)
 
 
-@app.route('/profile')
+@app.route('/profile', methods=['GET', 'POST'])
 def profile():
-    form = ProfileEditForm()
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    db_sess = create_session()
+    person = db_sess.query(Person).get(session['user_id'])
+
+
+    profile_form = ProfileEditForm(obj=person)
     password_form = ChangePasswordForm()
-    return render_template('profile.html', form=form, password_form=password_form)
+
+    #Сохранить настройки
+    if request.method == 'POST' and 'save_settings' in request.form:
+        person.newsletter = 'newsletter' in request.form
+        person.save_history = 'save_history' in request.form
+        db_sess.commit()
+        flash('Настройки сохранены')
+        return redirect(url_for('profile'))
+
+    #текущие заказы
+    current_orders = db_sess.query(Order).filter(
+        Order.person_id == person.id,
+        Order.order_type_rel.has(OrderType.name != 'Доставлен')
+    ).all()
+
+    addresses = person.addresses
+    payment_methods = person.payment_methods
+
+    return render_template(
+        'profile.html',
+        person=person,
+        form=profile_form,
+        password_form=password_form,
+        current_orders=current_orders,
+        addresses=addresses,
+        payment_methods=payment_methods
+    )
+
+
+@app.route('/profile/add_address', methods=['POST'])
+def add_address():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    db_sess = create_session()
+    new_address = request.form.get('address', '').strip()
+    if new_address:
+        addr = UserAddress(
+            person_id=session['user_id'],
+            address=new_address,
+            is_default=False
+        )
+        db_sess.add(addr)
+        db_sess.commit()
+    return redirect(url_for('profile'))
+
+
+@app.route('/profile/delete_address/<int:addr_id>')
+def delete_address(addr_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    db_sess = create_session()
+    addr = db_sess.query(UserAddress).filter(
+        UserAddress.id == addr_id,
+        UserAddress.person_id == session['user_id']
+    ).first()
+    if addr:
+        db_sess.delete(addr)
+        db_sess.commit()
+    return redirect(url_for('profile'))
+
+
+@app.route('/profile/add_card', methods=['POST'])
+def add_card():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    db_sess = create_session()
+    card_number = request.form.get('card_number', '').strip()
+    card_type = request.form.get('card_type', '').strip()
+    if card_number:
+        masked = card_number[:4] + ' **** **** ' + card_number[-4:]
+        card = UserPaymentMethod(
+            person_id=session['user_id'],
+            card_number=masked,
+            card_type=card_type,
+            is_default=False
+        )
+        db_sess.add(card)
+        db_sess.commit()
+    return redirect(url_for('profile'))
+
+
+@app.route('/profile/delete_card/<int:card_id>')
+def delete_card(card_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    db_sess = create_session()
+    card = db_sess.query(UserPaymentMethod).filter(
+        UserPaymentMethod.id == card_id,
+        UserPaymentMethod.person_id == session['user_id']
+    ).first()
+    if card:
+        db_sess.delete(card)
+        db_sess.commit()
+    return redirect(url_for('profile'))
 
 
 @app.route('/cart')
 def cart():
-    checkout_form = CheckoutForm()
-    return render_template('cart.html', form=checkout_form)
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    db_sess = create_session()
+    cart_items = db_sess.query(Cart).filter(Cart.person_id == session['user_id']).all()
+
+    # Вычисляем общую сумму
+    total = sum(item.product.cost * item.amount for item in cart_items)
+
+    return render_template('cart.html', cart_items=cart_items, total=total)
+
+
+@app.route('/cart/add/<int:product_id>', methods=['POST'])
+def add_to_cart(product_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    form = AddToCartForm()
+    if form.validate_on_submit():
+        size_id = request.form.get('size_id')  #передаь из формы на странице товара
+        if not size_id:
+            return "Не выбран размер", 400
+
+        db_sess = create_session()
+
+        existing = db_sess.query(Cart).filter(
+            Cart.person_id == session['user_id'],
+            Cart.product_id == product_id,
+            Cart.size_id == int(size_id)
+        ).first()
+
+        if existing:
+            existing.amount += form.quantity.data
+        else:
+            cart_item = Cart(
+                person_id=session['user_id'],
+                product_id=product_id,
+                size_id=int(size_id),
+                amount=form.quantity.data
+            )
+            db_sess.add(cart_item)
+
+        db_sess.commit()
+        return redirect(url_for('cart'))
+
+    return redirect(url_for('prod', id=product_id))
+
+
+@app.route('/cart/update/<int:cart_id>', methods=['POST'])
+def update_cart(cart_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    db_sess = create_session()
+    cart_item = db_sess.query(Cart).filter(
+        Cart.id == cart_id,
+        Cart.person_id == session['user_id']
+    ).first()
+
+    if cart_item:
+        new_quantity = request.form.get('quantity', type=int)
+        if new_quantity and new_quantity > 0:
+            cart_item.amount = new_quantity
+            db_sess.commit()
+
+    return redirect(url_for('cart'))
+
+
+@app.route('/cart/remove/<int:cart_id>')
+def remove_from_cart(cart_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    db_sess = create_session()
+    cart_item = db_sess.query(Cart).filter(
+        Cart.id == cart_id,
+        Cart.person_id == session['user_id']
+    ).first()
+
+    if cart_item:
+        db_sess.delete(cart_item)
+        db_sess.commit()
+
+    return redirect(url_for('cart'))
+
+
+@app.route('/checkout', methods=['GET', 'POST'])
+def checkout():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    form = CheckoutForm()
+    db_sess = create_session()
+
+    #Получаем товары в корзине
+    cart_items = db_sess.query(Cart).filter(Cart.person_id == session['user_id']).all()
+    if not cart_items:
+        return redirect(url_for('cart'))
+
+    total = sum(item.product.cost * item.amount for item in cart_items)
+
+    if form.validate_on_submit():
+        payment_type = db_sess.query(PaymentType).filter(PaymentType.name == form.payment_method.data).first()
+        if not payment_type:
+            payment_type = PaymentType(name=form.payment_method.data)
+            db_sess.add(payment_type)
+            db_sess.flush()
+
+        order_type = db_sess.query(OrderType).filter(OrderType.name == 'Новый').first()
+        if not order_type:
+            order_type = OrderType(name='Новый')
+            db_sess.add(order_type)
+            db_sess.flush()
+
+        order = Order(
+            person_id=session['user_id'],
+            payment_type_id=payment_type.id,
+            order_type_id=order_type.id
+        )
+        db_sess.add(order)
+        db_sess.flush()
+
+        #в order_items
+        for item in cart_items:
+            order_item = OrderItem(
+                order_id=order.id,
+                product_id=item.product_id,
+                size_id=item.size_id,
+                amount=item.amount,
+                price=item.product.cost
+            )
+            db_sess.add(order_item)
+            db_sess.delete(item)
+
+        db_sess.commit()
+        return redirect(url_for('order_status', order_id=order.id))
+
+    return render_template('payout.html', form=form, cart_items=cart_items, total=total)
 
 
 @app.route('/payout')
@@ -165,9 +402,15 @@ def payout():
     return render_template('payout.html', form=checkout_form)
 
 
-@app.route('/order_status')
-def order_status():
-    return render_template('order_status.html')
+@app.route('/order_status/<int:order_id>')
+def order_status(order_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    db_sess = create_session()
+    order = db_sess.query(Order).filter(Order.id == order_id, Order.person_id == session['user_id']).first()
+    if not order:
+        return "Заказ не найден"
+    return render_template('order_status.html', order=order)
 
 
 if __name__ == '__main__':

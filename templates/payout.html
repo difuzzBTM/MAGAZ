@@ -7,10 +7,10 @@
 
 <form method="POST" class="checkout-form">
     {{ form.hidden_tag() }}
-    
+
     <fieldset>
         <legend>Получатель</legend>
-        
+
         <div class="form-group">
             {{ form.first_name.label }}
             {{ form.first_name(class="form-control") }}
@@ -18,7 +18,7 @@
                 <div class="errors">{% for error in form.first_name.errors %}<span class="error">{{ error }}</span>{% endfor %}</div>
             {% endif %}
         </div>
-        
+
         <div class="form-group">
             {{ form.last_name.label }}
             {{ form.last_name(class="form-control") }}
@@ -26,7 +26,7 @@
                 <div class="errors">{% for error in form.last_name.errors %}<span class="error">{{ error }}</span>{% endfor %}</div>
             {% endif %}
         </div>
-        
+
         <div class="form-group">
             {{ form.address.label }}
             {{ form.address(class="form-control", placeholder="Улица, дом, квартира") }}
@@ -34,7 +34,7 @@
                 <div class="errors">{% for error in form.address.errors %}<span class="error">{{ error }}</span>{% endfor %}</div>
             {% endif %}
         </div>
-        
+
         <div class="form-group">
             {{ form.phone.label }}
             {{ form.phone(class="form-control", placeholder="+7 (999) 123-45-67") }}
@@ -43,10 +43,10 @@
             {% endif %}
         </div>
     </fieldset>
-    
+
     <fieldset>
         <legend>Способ оплаты</legend>
-        
+
         <div class="form-group radio-group">
             {% for subfield in form.payment_method %}
                 <div class="radio-item">
@@ -59,10 +59,10 @@
             {% endif %}
         </div>
     </fieldset>
-    
+
     <fieldset>
         <legend>Дополнительно</legend>
-        
+
         <div class="form-group">
             {{ form.comment.label }}
             {{ form.comment(class="form-control", rows=4, placeholder="Пожелания к заказу...") }}
@@ -71,7 +71,7 @@
             {% endif %}
         </div>
     </fieldset>
-    
+
     <div class="form-group">
         {{ form.submit(class="btn btn-large") }}
     </div>

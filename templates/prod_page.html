@@ -16,27 +16,24 @@
 
     <div class="product-info">
         <h1>{{ product.name }}</h1>
-
         <div class="price-section">
             <span class="price">{{ product.cost }} ₽</span>
         </div>
 
-        <div class="size-section">
-            <h3>Размеры:</h3>
-            <div class="size-buttons">
-                {% for ps in product.product_sizes %}
-                    <span class="size-option">{{ ps.size.name }}</span>
-                {% endfor %}
-            </div>
-        </div>
-
-        <div class="description-section">
-            <h3>Описание</h3>
-            <p class="description">{{ product.description or 'Описание отсутствует' }}</p>
-        </div>
-
-        <form method="POST" class="add-to-cart-form">
+        <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}" class="add-to-cart-form">
             {{ form.hidden_tag() }}
+
+            <div class="size-section">
+                <h3>Выберите размер:</h3>
+                <div class="size-buttons">
+                    {% for ps in product.product_sizes %}
+                        <label class="size-option">
+                            <input type="radio" name="size_id" value="{{ ps.size.id }}" required>
+                            {{ ps.size.name }}
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
 
             <div class="form-group">
                 <label>Количество:</label>

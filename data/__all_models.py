@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, Text, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, Text, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from data.db_session import SqlAlchemyBase
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -103,7 +103,6 @@ class Order(SqlAlchemyBase):
     __tablename__ = 'orders'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-
     person_id = Column(Integer, ForeignKey('persons.id'), nullable=False)
     payment_type_id = Column(Integer, ForeignKey('payment_types.id'), nullable=True)
     order_type_id = Column(Integer, ForeignKey('order_types.id'), nullable=True)
@@ -112,7 +111,6 @@ class Order(SqlAlchemyBase):
     payment_type_rel = relationship("PaymentType", back_populates="orders")
     order_type_rel = relationship("OrderType", back_populates="orders")
     items = relationship("OrderItem", back_populates="order", cascade="all, delete-orphan")
-    carts = relationship("Cart", back_populates="order")
 
 
 
@@ -142,15 +140,13 @@ class Storage(SqlAlchemyBase):
 class Cart(SqlAlchemyBase):
     __tablename__ = 'carts'
 
-    person_id = Column(Integer, ForeignKey('persons.id'), primary_key=True)
-    order_id = Column(Integer, ForeignKey('orders.id'), primary_key=True)
-    product_id = Column(Integer, ForeignKey('products.id'), primary_key=True)
-    size_id = Column(Integer, ForeignKey('sizes.id'), primary_key=True)
-
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    person_id = Column(Integer, ForeignKey('persons.id'), nullable=False)
+    product_id = Column(Integer, ForeignKey('products.id'), nullable=False)
+    size_id = Column(Integer, ForeignKey('sizes.id'), nullable=False)
     amount = Column(Integer, nullable=False, default=1)
 
     person = relationship("Person", back_populates="carts")
-    order = relationship("Order", back_populates="carts")
     product = relationship("Product", back_populates="carts")
     size = relationship("Size")
 
@@ -168,3 +164,26 @@ class OrderItem(SqlAlchemyBase):
     order = relationship("Order", back_populates="items")
     product = relationship("Product", back_populates="order_items")
     size = relationship("Size")
+
+class UserAddress(SqlAlchemyBase):
+    __tablename__ = 'user_addresses'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    person_id = Column(Integer, ForeignKey('persons.id'), nullable=False)
+    address = Column(String(200), nullable=False)
+    is_default = Column(Boolean, default=False)
+
+    person = relationship("Person", backref="addresses")
+
+
+class UserPaymentMethod(SqlAlchemyBase):
+    __tablename__ = 'user_payment_methods'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    person_id = Column(Integer, ForeignKey('persons.id'), nullable=False)
+    card_number = Column(String(19), nullable=False)
+    card_type = Column(String(20))
+    is_default = Column(Boolean, default=False)
+
+    person = relationship("Person", backref="payment_methods")
+

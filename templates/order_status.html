@@ -1,47 +1,32 @@
 {% extends "base.html" %}
 
-{% block title %}Статус заказа{% endblock %}
+{% block title %}Статус заказа №{{ order.id }}{% endblock %}
 
 {% block content %}
 <div class="order-status-page">
     <h1>Статус заказа №{{ order.id }}</h1>
 
     <div class="status-layout">
-        <div class="map-section">
-            <h2>Карта доставки</h2>
-            <div class="map-placeholder">
-                <p class="map-note">{{ order.address|default('Адрес доставки') }}</p>
-            </div>
-        </div>
-
         <div class="order-info">
-            <h2>Информация о заказе</h2>
-
             <div class="info-card">
                 <h3>Статус доставки</h3>
-                <div class="progress">
-                    {# индикатор прогресса по статусу #}
-                </div>
-                <p class="current-status">Текущий этап: {{ order.status_text|default('Неизвестно') }}</p>
+                <p>{{ order.order_type_rel.name }}</p>
             </div>
 
             <div class="info-card">
                 <h3>Детали заказа</h3>
                 <table class="order-details">
                     <tr><td>Номер заказа:</td><td>{{ order.id }}</td></tr>
-                    <tr><td>Дата заказа:</td><td>{{ order.created_at|date_format }}</td></tr>
-                    <tr><td>Сумма:</td><td>{{ order.total }} ₽</td></tr>
-                    <tr><td>Способ оплаты:</td><td>{{ order.payment_method }}</td></tr>
-                    <tr><td>Адрес доставки:</td><td>{{ order.address }}</td></tr>
-                    <tr><td>Курьер:</td><td>{{ order.courier_name|default('Не назначен') }} {{ order.courier_phone|default('') }}</td></tr>
+                    <tr><td>Способ оплаты:</td><td>{{ order.payment_type_rel.name }}</td></tr>
                 </table>
             </div>
 
             <div class="info-card">
                 <h3>Состав заказа</h3>
                 <ul class="order-items">
-                    {# цикл по позициям заказа #}
-                    <li>Нет данных о товарах</li>
+                    {% for item in order.items %}
+                        <li>{{ item.product.name }} ({{ item.size.name }}) × {{ item.amount }} — {{ item.price * item.amount }} ₽</li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>
