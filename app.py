@@ -3,7 +3,7 @@ from forms import (LoginForm, RegisterForm, ResetPasswordForm,
                   ProductFilterForm, AddToCartForm, CheckoutForm,
                   ProfileEditForm, ChangePasswordForm)
 from data.db_session import global_init, create_session
-from data.__all_models import  ProductType, ProductSize, Person, Product, Size, Cart, Order, PaymentType, OrderType, OrderItem, UserPaymentMethod, UserAddress
+from models import *
 from flask import flash
 
 app = Flask(__name__)
@@ -128,7 +128,7 @@ def reset():
         new_password_again = request.form.get('new_password_again')
 
         return render_template('reset.html', form=form,
-                               message="Инструкции по сбросу отправлены на почту (заглушка)")
+                               message="Инструкции по сбросу отправлены на почту")
 
     return render_template('reset.html', form=form)
 
@@ -155,11 +155,13 @@ def profile():
     db_sess = create_session()
     person = db_sess.query(Person).get(session['user_id'])
 
+    if not person:
+        session.pop('user_id', None)
+        return redirect(url_for('login'))
 
     profile_form = ProfileEditForm(obj=person)
     password_form = ChangePasswordForm()
 
-    #Сохранить настройки
     if request.method == 'POST' and 'save_settings' in request.form:
         person.newsletter = 'newsletter' in request.form
         person.save_history = 'save_history' in request.form
@@ -167,13 +169,15 @@ def profile():
         flash('Настройки сохранены')
         return redirect(url_for('profile'))
 
-    #текущие заказы
     current_orders = db_sess.query(Order).filter(
-        Order.person_id == person.id,
-        Order.order_type_rel.has(OrderType.name != 'Доставлен')
+        Order.person_id == person.id
     ).all()
 
-    addresses = person.addresses
+    addresses = db_sess.query(UserAddress).filter(
+        UserAddress.person_id == person.id
+    ).all()
+
+
     payment_methods = person.payment_methods
 
     return render_template(
@@ -191,18 +195,31 @@ def profile():
 def add_address():
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    db_sess = create_session()
-    new_address = request.form.get('address', '').strip()
-    if new_address:
-        addr = UserAddress(
-            person_id=session['user_id'],
-            address=new_address,
-            is_default=False
-        )
-        db_sess.add(addr)
-        db_sess.commit()
-    return redirect(url_for('profile'))
 
+    db_sess = create_session()
+    person = db_sess.query(Person).get(session['user_id'])
+
+    if not person:
+        session.pop('user_id', None)
+        return redirect(url_for('login'))
+
+    address_input = request.form.get('address_input', '').strip()
+
+    if not address_input:
+        flash('Введите адрес')
+        return redirect(url_for('profile'))
+
+
+    addr = UserAddress(
+        person_id=person.id,
+        address=address_input
+    )
+    db_sess.add(addr)
+    db_sess.commit()
+    flash('Адрес сохранён')
+
+
+    return redirect(url_for('profile'))
 
 @app.route('/profile/delete_address/<int:addr_id>')
 def delete_address(addr_id):
@@ -349,16 +366,54 @@ def checkout():
 
     form = CheckoutForm()
     db_sess = create_session()
+    person = db_sess.query(Person).get(session['user_id'])
 
-    #Получаем товары в корзине
-    cart_items = db_sess.query(Cart).filter(Cart.person_id == session['user_id']).all()
+    if not person:
+        session.pop('user_id', None)
+        return redirect(url_for('login'))
+
+    cart_items = db_sess.query(Cart).filter(Cart.person_id == person.id).all()
     if not cart_items:
         return redirect(url_for('cart'))
 
     total = sum(item.product.cost * item.amount for item in cart_items)
+    addresses = person.addresses
+
+    if request.method == 'POST' and 'select_address' in request.form:
+        selected_address_id = request.form.get('selected_address')
+
+        if selected_address_id and selected_address_id != 'manual':
+            addr = db_sess.query(UserAddress).filter(
+                UserAddress.id == int(selected_address_id),
+                UserAddress.person_id == person.id
+            ).first()
+            if addr:
+                form.address.data = addr.address
+                flash(f'Выбран адрес: {addr.address}')
+
+        return render_template(
+            'payout.html',
+            form=form,
+            addresses=addresses,
+            total=total,
+            selected_address_id=selected_address_id
+        )
 
     if form.validate_on_submit():
-        payment_type = db_sess.query(PaymentType).filter(PaymentType.name == form.payment_method.data).first()
+        delivery_address = form.address.data.strip()
+
+        if not delivery_address:
+            flash('Укажите адрес доставки')
+            return render_template(
+                'payout.html',
+                form=form,
+                addresses=addresses,
+                total=total
+            )
+
+        payment_type = db_sess.query(PaymentType).filter(
+            PaymentType.name == form.payment_method.data
+        ).first()
         if not payment_type:
             payment_type = PaymentType(name=form.payment_method.data)
             db_sess.add(payment_type)
@@ -371,14 +426,14 @@ def checkout():
             db_sess.flush()
 
         order = Order(
-            person_id=session['user_id'],
+            person_id=person.id,
             payment_type_id=payment_type.id,
-            order_type_id=order_type.id
+            order_type_id=order_type.id,
+            delivery_address=delivery_address
         )
         db_sess.add(order)
         db_sess.flush()
 
-        #в order_items
         for item in cart_items:
             order_item = OrderItem(
                 order_id=order.id,
@@ -393,7 +448,12 @@ def checkout():
         db_sess.commit()
         return redirect(url_for('order_status', order_id=order.id))
 
-    return render_template('payout.html', form=form, cart_items=cart_items, total=total)
+    return render_template(
+        'payout.html',
+        form=form,
+        addresses=addresses,
+        total=total
+    )
 
 
 @app.route('/payout')

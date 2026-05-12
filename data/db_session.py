@@ -1,8 +1,7 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
-
-
-SqlAlchemyBase = declarative_base()
+from sqlalchemy.orm import sessionmaker
+from data.base import SqlAlchemyBase
+from models import *
 
 __factory = None
 
@@ -19,10 +18,8 @@ def global_init(db_file):
     print(f"Подключение к базе данных: {conn_str}")
 
     engine = create_engine(conn_str, echo=False)
-
     __factory = sessionmaker(bind=engine)
 
-    from . import __all_models
     SqlAlchemyBase.metadata.create_all(engine)
 
 

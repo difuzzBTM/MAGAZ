@@ -3,59 +3,200 @@
 {% block title %}Каталог одежды{% endblock %}
 
 {% block content %}
+<style>
+    .search-box {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+    .search-input {
+        flex: 1;
+        padding: 12px 16px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 15px;
+        transition: border-color 0.2s;
+    }
+    .search-input:focus {
+        outline: none;
+        border-color: #1a1a1a;
+    }
+    .filters {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        margin-top: 10px;
+        margin-bottom: 25px;
+    }
+    .filters summary {
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 15px;
+        margin-bottom: 12px;
+        color: #1a1a1a;
+    }
+    .filter-row {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+    .filter-group {
+        flex: 1;
+        min-width: 160px;
+    }
+    .filter-group label {
+        display: block;
+        font-size: 13px;
+        color: #777;
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+    .filter-group select,
+    .filter-group input {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: border-color 0.2s;
+    }
+    .filter-group select:focus,
+    .filter-group input:focus {
+        outline: none;
+        border-color: #1a1a1a;
+    }
+    .filter-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 18px;
+    }
+    .btn-secondary {
+        background: #666;
+    }
+    .btn-secondary:hover {
+        background: #888;
+    }
+    h2 {
+        margin: 25px 0 15px;
+        font-size: 22px;
+        color: #1a1a1a;
+    }
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 20px;
+    }
+    .product-card {
+        background: white;
+        border: 1px solid #e8e8e8;
+        border-radius: 10px;
+        padding: 18px;
+        text-align: center;
+        transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .product-card:hover {
+        box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+    }
+    .product-card img {
+        width: 100%;
+        height: 190px;
+        object-fit: cover;
+        border-radius: 6px;
+        margin-bottom: 12px;
+        background: #f5f5f5;
+    }
+    .product-card h3 {
+        font-size: 16px;
+        margin-bottom: 6px;
+        color: #1a1a1a;
+    }
+    .product-card .price {
+        font-weight: 700;
+        font-size: 20px;
+        margin-bottom: 6px;
+        color: #1a1a1a;
+    }
+    .product-card .size {
+        font-size: 13px;
+        color: #999;
+        margin-bottom: 12px;
+    }
+    .empty-message {
+        text-align: center;
+        padding: 40px;
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        color: #888;
+    }
+</style>
+
 <div class="main-page">
-    <div class="search-filter-row">
-        <form method="GET" class="filter-form" id="filter-form">
-            <div class="search-box">
-                {{ form.search(class="search-input", placeholder="Поиск по названию") }}
-                <button type="submit" class="btn">Поиск</button>
-            </div>
+    <form method="GET">
+        <div class="search-box">
+            <input type="text" name="search" class="search-input" placeholder="Поиск по названию товара..." value="{{ request.args.get('search', '') }}">
+            <button type="submit" class="btn">Поиск</button>
+        </div>
 
-            <details>
-                <summary>Фильтры</summary>
-                <div class="filters">
-                    {{ form.hidden_tag() }}
-
+        <details>
+            <summary>Фильтры и сортировка</summary>
+            <div class="filters">
+                <div class="filter-row">
                     <div class="filter-group">
-                        {{ form.category.label }}
-                        {{ form.category(class="form-control") }}
+                        <label>Категория</label>
+                        <select name="category">
+                            <option value="">Все категории</option>
+                            {% for c in form.category.choices %}
+                                <option value="{{ c[0] }}" {% if request.args.get('category') == c[0] %}selected{% endif %}>{{ c[1] }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
-
                     <div class="filter-group">
-                        {{ form.size.label }}
-                        {{ form.size(class="form-control") }}
+                        <label>Размер</label>
+                        <select name="size">
+                            <option value="">Все размеры</option>
+                            {% for s in form.size.choices %}
+                                <option value="{{ s[0] }}" {% if request.args.get('size') == s[0] %}selected{% endif %}>{{ s[1] }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
-
                     <div class="filter-group">
-                        <label>Цена:</label>
-                        {{ form.price_min(class="form-control", placeholder="от") }}
-                        {{ form.price_max(class="form-control", placeholder="до") }}
+                        <label>Цена от</label>
+                        <input type="number" name="price_min" placeholder="0" value="{{ request.args.get('price_min', '') }}">
                     </div>
-
                     <div class="filter-group">
-                        {{ form.sort.label }}
-                        {{ form.sort(class="form-control") }}
+                        <label>Цена до</label>
+                        <input type="number" name="price_max" placeholder="99999" value="{{ request.args.get('price_max', '') }}">
                     </div>
-
-                    <div class="filter-buttons">
-                        <button type="submit" class="btn">Применить фильтры</button>
-                        <a href="{{ url_for('main') }}" class="btn btn-secondary">Сбросить фильтры</a>
+                    <div class="filter-group">
+                        <label>Сортировка</label>
+                        <select name="sort">
+                            <option value="name_asc" {% if request.args.get('sort') == 'name_asc' %}selected{% endif %}>Название (А-Я)</option>
+                            <option value="name_desc" {% if request.args.get('sort') == 'name_desc' %}selected{% endif %}>Название (Я-А)</option>
+                            <option value="price_asc" {% if request.args.get('sort') == 'price_asc' %}selected{% endif %}>Цена (по возрастанию)</option>
+                            <option value="price_desc" {% if request.args.get('sort') == 'price_desc' %}selected{% endif %}>Цена (по убыванию)</option>
+                        </select>
                     </div>
                 </div>
-            </details>
-        </form>
-    </div>
+                <div class="filter-buttons">
+                    <button type="submit" class="btn">Применить</button>
+                    <a href="{{ url_for('main') }}" class="btn btn-secondary">Сбросить</a>
+                </div>
+            </div>
+        </details>
+    </form>
 
     <h2>Товары</h2>
     <div class="product-grid">
         {% if products %}
             {% for product in products %}
             <div class="product-card">
-                <img src="{{ product.photos.split(',')[0] if product.photos else 'https://via.placeholder.com/250x250/f0f0f0/cccccc?text=Нет+фото' }}" alt="{{ product.name }}">
+                <img src="{{ product.photos.split(',')[0] if product.photos else 'https://via.placeholder.com/240x190/f5f5f5/cccccc?text=No+photo' }}" alt="{{ product.name }}">
                 <h3>{{ product.name }}</h3>
-                <p class="price">{{ product.cost }} ₽</p>
+                <p class="price">{{ product.cost }} руб.</p>
                 <p class="size">
-                    Размеры:
                     {% for ps in product.product_sizes %}
                         {{ ps.size.name }}{% if not loop.last %}, {% endif %}
                     {% endfor %}
@@ -64,7 +205,10 @@
             </div>
             {% endfor %}
         {% else %}
-            <p>Товары не найдены</p>
+            <div class="empty-message">
+                <p>Товары не найдены</p>
+                <p style="font-size:13px;margin-top:5px;">Попробуйте изменить параметры поиска</p>
+            </div>
         {% endif %}
     </div>
 </div>

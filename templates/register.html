@@ -3,35 +3,113 @@
 {% block title %}Регистрация{% endblock %}
 
 {% block content %}
-<div class="register-container">
+<style>
+    .auth-container {
+        max-width: 420px;
+        margin: 40px auto;
+        background: white;
+        padding: 35px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+    .auth-container h1 {
+        margin-bottom: 25px;
+        text-align: center;
+        font-size: 24px;
+        color: #1a1a1a;
+    }
+    .form-group {
+        margin-bottom: 18px;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 14px;
+        color: #555;
+        font-weight: 500;
+    }
+    .form-control {
+        width: 100%;
+        padding: 11px 14px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: border-color 0.2s;
+    }
+    .form-control:focus {
+        outline: none;
+        border-color: #1a1a1a;
+    }
+    .btn-auth {
+        width: 100%;
+        padding: 13px;
+        background: #1a1a1a;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+        transition: background 0.2s;
+    }
+    .btn-auth:hover {
+        background: #333;
+    }
+    .error-message {
+        background: #fff3f3;
+        color: #c62828;
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 18px;
+        text-align: center;
+        font-size: 14px;
+        border: 1px solid #ffcdd2;
+    }
+    .auth-link {
+        text-align: center;
+        margin-top: 18px;
+        font-size: 14px;
+    }
+    .auth-link a {
+        color: #1a1a1a;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    .auth-link a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="auth-container">
     <h1>Регистрация</h1>
 
-    <form method="POST" class="simple-form">
-        {{ form.hidden_tag() }}
+    {% if message %}
+    <div class="error-message">{{ message }}</div>
+    {% endif %}
 
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            <label>{{ form.name.label }}</label>
+            {{ form.name(class="form-control", placeholder="Ваше имя") }}
+        </div>
         <div class="form-group">
             <label>{{ form.email.label }}</label>
             {{ form.email(class="form-control", placeholder="your@email.com") }}
         </div>
-
-        <div class="form-group">
-            <label>{{ form.name.label }}</label>
-            {{ form.name(class="form-control", placeholder="Иван Петров") }}
-        </div>
-
         <div class="form-group">
             <label>{{ form.password.label }}</label>
-            {{ form.password(class="form-control", placeholder="••••••••") }}
+            {{ form.password(class="form-control", placeholder="Минимум 6 символов") }}
         </div>
-
         <div class="form-group">
             <label>{{ form.confirm_password.label }}</label>
-            {{ form.confirm_password(class="form-control", placeholder="••••••••") }}
+            {{ form.confirm_password(class="form-control", placeholder="Повторите пароль") }}
         </div>
-
         <div class="form-group">
-            {{ form.submit(class="btn") }}
+            {{ form.submit(class="btn-auth") }}
         </div>
     </form>
+
+    <p class="auth-link">Уже есть аккаунт? <a href="{{ url_for('login') }}">Войти</a></p>
 </div>
 {% endblock %}

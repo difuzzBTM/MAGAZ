@@ -3,76 +3,161 @@
 {% block title %}Профиль{% endblock %}
 
 {% block content %}
+<style>
+    .profile-page h1 {
+        margin-bottom: 25px;
+        font-size: 24px;
+    }
+    .profile-sections section {
+        background: white;
+        padding: 22px;
+        border-radius: 10px;
+        border: 1px solid #e8e8e8;
+        margin-bottom: 20px;
+    }
+    .profile-sections h2 {
+        font-size: 18px;
+        margin-bottom: 18px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #eee;
+        color: #1a1a1a;
+    }
+    .profile-sections h3 {
+        font-size: 15px;
+        margin: 16px 0 10px;
+        color: #444;
+    }
+    .order-card {
+        padding: 14px;
+        border: 1px solid #e8e8e8;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+    .order-card h3 {
+        font-size: 15px;
+        margin: 0 0 5px;
+    }
+    .order-status {
+        font-size: 13px;
+        color: #888;
+        margin-bottom: 8px;
+    }
+    .list-group {
+        list-style: none;
+        margin-bottom: 15px;
+    }
+    .list-group-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 14px;
+        border: 1px solid #e8e8e8;
+        border-radius: 6px;
+        margin-bottom: 6px;
+        font-size: 14px;
+    }
+    .inline-form {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    .inline-form input {
+        flex: 1;
+        padding: 9px 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+    }
+    .inline-form input:focus {
+        outline: none;
+        border-color: #1a1a1a;
+    }
+    .settings-form label {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+    .settings-form input[type="checkbox"] {
+        margin-right: 8px;
+    }
+    .empty-message {
+        color: #888;
+        font-size: 14px;
+    }
+</style>
+
 <div class="profile-page">
     <h1>Личный кабинет</h1>
 
     <div class="profile-sections">
-        <section class="current-orders">
+        <section>
             <h2>Текущие заказы</h2>
-            <div class="orders-grid">
-                {% if current_orders %}
-                    {% for order in current_orders %}
-                    <div class="order-card">
-                        <h3>Заказ №{{ order.id }}</h3>
-                        <p class="order-status">Статус: {{ order.order_type_rel.name }}</p>
-                        <p>Сумма: {{ order.items|sum(attribute='price') * order.items|sum(attribute='amount') }} ₽</p>
-                        <a href="{{ url_for('order_status', order_id=order.id) }}" class="btn">Детали</a>
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    <p>Нет активных заказов</p>
-                {% endif %}
-            </div>
+            {% if current_orders %}
+                {% for order in current_orders %}
+                <div class="order-card">
+                    <h3>Заказ No.{{ order.id }}</h3>
+                    <p class="order-status">Статус: {{ order.order_type_rel.name }}</p>
+                    <a href="{{ url_for('order_status', order_id=order.id) }}" class="btn-small">Подробнее</a>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="empty-message">Нет активных заказов</p>
+            {% endif %}
         </section>
 
-        <section class="settings">
+        <section>
             <h2>Настройки</h2>
 
-            <div class="settings-section">
-                <h3>Адреса доставки</h3>
-                {% if addresses %}
-                    <ul class="list-group">
-                    {% for addr in addresses %}
-                        <li class="list-group-item">
-                            {{ addr.address }}
-                            <a href="{{ url_for('delete_address', addr_id=addr.id) }}" class="btn-small">Удалить</a>
-                        </li>
-                    {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>Адресов пока нет</p>
-                {% endif %}
-                <form method="POST" action="{{ url_for('add_address') }}" class="inline-form">
-                    <input type="text" name="address" placeholder="Введите адрес" required>
-                    <button type="submit" class="btn-small">+ Добавить адрес</button>
-                </form>
-            </div>
+            <h3>Адреса доставки</h3>
+            {% if addresses %}
+                <ul class="list-group">
+                {% for addr in addresses %}
+                    <li class="list-group-item">
+                        <span>{{ addr.address }}</span>
+                        <a href="{{ url_for('delete_address', addr_id=addr.id) }}" class="btn-small btn-danger">Удалить</a>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p class="empty-message">Адресов пока нет</p>
+            {% endif %}
 
+            <form method="POST" action="{{ url_for('add_address') }}" class="inline-form">
 
-            <div class="settings-section">
-                <h3>Способы оплаты</h3>
-                {% if payment_methods %}
-                    <ul class="list-group">
-                    {% for card in payment_methods %}
-                        <li class="list-group-item">
-                            {{ card.card_type }} {{ card.card_number }}
-                            <a href="{{ url_for('delete_card', card_id=card.id) }}" class="btn-small">Удалить</a>
-                        </li>
-                    {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>Нет сохранённых карт</p>
-                {% endif %}
-                <form method="POST" action="{{ url_for('add_card') }}" class="inline-form">
-                    <input type="text" name="card_number" placeholder="Номер карты" required>
-                    <input type="text" name="card_type" placeholder="Тип (Visa, Mastercard)">
-                    <button type="submit" class="btn-small">+ Добавить карту</button>
-                </form>
-            </div>
+                <input type="text" name="address_input" placeholder="Введите адрес" required>
+                <button type="submit" class="btn-small">+ Добавить</button>
+            </form>
 
-                <div class="form-group">
-                    <button type="submit" name="save_settings" class="btn">Сохранить настройки</button>
+            <h3>Способы оплаты</h3>
+            {% if payment_methods %}
+                <ul class="list-group">
+                {% for card in payment_methods %}
+                    <li class="list-group-item">
+                        <span>{{ card.card_type }} {{ card.card_number }}</span>
+                        <a href="{{ url_for('delete_card', card_id=card.id) }}" class="btn-small btn-danger">Удалить</a>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p class="empty-message">Нет сохранённых карт</p>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('add_card') }}" class="inline-form">
+                {{ form.hidden_tag() }}
+                <input type="text" name="card_number" placeholder="Номер карты" required>
+                <input type="text" name="card_type" placeholder="Тип (Visa, MC)">
+                <button type="submit" class="btn-small">+ Добавить</button>
+            </form>
+
+            <form method="POST" style="margin-top:18px;">
+                {{ form.hidden_tag() }}
+                <h3>Прочие настройки</h3>
+                <div class="settings-form">
+                    <label><input type="checkbox" name="newsletter" {% if person.newsletter %}checked{% endif %}> Получать новости о скидках</label>
+                    <label><input type="checkbox" name="save_history" {% if person.save_history %}checked{% endif %}> Сохранять историю просмотров</label>
                 </div>
+                <button type="submit" name="save_settings" class="btn" style="margin-top:10px;">Сохранить настройки</button>
             </form>
         </section>
     </div>

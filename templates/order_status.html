@@ -1,35 +1,121 @@
 {% extends "base.html" %}
 
-{% block title %}Статус заказа №{{ order.id }}{% endblock %}
+{% block title %}Статус заказа No.{{ order.id }}{% endblock %}
 
 {% block content %}
+<style>
+    .order-status-page h1 {
+        margin-bottom: 25px;
+        font-size: 24px;
+    }
+    .status-layout {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+    .info-card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #e8e8e8;
+        margin-bottom: 15px;
+        flex: 1;
+        min-width: 300px;
+    }
+    .info-card h3 {
+        font-size: 16px;
+        margin-bottom: 12px;
+        color: #1a1a1a;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #eee;
+    }
+    .order-details {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .order-details td {
+        padding: 8px 10px;
+        font-size: 14px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .order-details td:first-child {
+        color: #888;
+        width: 40%;
+    }
+    .order-items {
+        list-style: none;
+    }
+    .order-items li {
+        padding: 8px 0;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 14px;
+    }
+    .order-items li:last-child {
+        border-bottom: none;
+    }
+    .status-badge {
+        display: inline-block;
+        padding: 5px 14px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+    .status-new {
+        background: #e3f2fd;
+        color: #1565c0;
+    }
+    .status-processing {
+        background: #fff3e0;
+        color: #e65100;
+    }
+    .status-delivery {
+        background: #f3e5f5;
+        color: #7b1fa2;
+    }
+    .status-done {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+    .back-link {
+        margin-top: 20px;
+    }
+</style>
+
 <div class="order-status-page">
-    <h1>Статус заказа №{{ order.id }}</h1>
+    <h1>Статус заказа No.{{ order.id }}</h1>
 
     <div class="status-layout">
-        <div class="order-info">
-            <div class="info-card">
-                <h3>Статус доставки</h3>
-                <p>{{ order.order_type_rel.name }}</p>
-            </div>
-
-            <div class="info-card">
-                <h3>Детали заказа</h3>
-                <table class="order-details">
-                    <tr><td>Номер заказа:</td><td>{{ order.id }}</td></tr>
-                    <tr><td>Способ оплаты:</td><td>{{ order.payment_type_rel.name }}</td></tr>
-                </table>
-            </div>
-
-            <div class="info-card">
-                <h3>Состав заказа</h3>
-                <ul class="order-items">
-                    {% for item in order.items %}
-                        <li>{{ item.product.name }} ({{ item.size.name }}) × {{ item.amount }} — {{ item.price * item.amount }} ₽</li>
-                    {% endfor %}
-                </ul>
-            </div>
+        <div class="info-card">
+            <h3>Статус доставки</h3>
+            <span class="status-badge status-{{ order.order_type_rel.name|lower }}">
+                {{ order.order_type_rel.name }}
+            </span>
         </div>
+
+        <div class="info-card">
+            <h3>Детали заказа</h3>
+            <table class="order-details">
+                <tr><td>Номер заказа</td><td><strong>{{ order.id }}</strong></td></tr>
+                <tr><td>Способ оплаты</td><td>{{ order.payment_type_rel.name }}</td></tr>
+                <tr><td>Адрес доставки</td><td>{{ order.delivery_address or 'Не указан' }}</td></tr>
+            </table>
+        </div>
+
+        <div class="info-card">
+            <h3>Состав заказа</h3>
+            <ul class="order-items">
+                {% for item in order.items %}
+                    <li>{{ item.product.name }} ({{ item.size.name }}) x {{ item.amount }} -- <strong>{{ item.price * item.amount }} руб.</strong></li>
+                {% endfor %}
+            </ul>
+            <p style="text-align:right;font-weight:700;margin-top:10px;font-size:16px;">
+                Итого: {{ order.items|sum(attribute='price') * order.items|sum(attribute='amount') }} руб.
+            </p>
+        </div>
+    </div>
+
+    <div class="back-link">
+        <a href="{{ url_for('profile') }}" class="btn">-- Вернуться в профиль</a>
     </div>
 </div>
 {% endblock %}

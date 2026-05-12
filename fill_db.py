@@ -1,6 +1,6 @@
 import sys
 from data.db_session import global_init, create_session
-from data.__all_models import ProductType, Size, Product, ProductSize
+from models import ProductType, Size, Product, ProductSize, Shop
 
 DB_PATH = 'db/shop.db'   # укажите точный путь, как в app.py
 
