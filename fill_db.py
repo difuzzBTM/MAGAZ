@@ -75,7 +75,7 @@ add_product(
     description='Удобная футболка из 100% хлопка. Подходит для повседневной носки.',
     type_name='Футболки',
     size_names_list=['S', 'M', 'L', 'XL'],
-    photos='https://via.placeholder.com/400x400/f0f0f0/cccccc?text=T-shirt'
+    photos='https://plus.unsplash.com/premium_photo-1693242804269-90f818c6001f?q=80&w=706&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
 )
 
 add_product(
@@ -84,7 +84,7 @@ add_product(
     description='Футболка с ярким принтом. Мягкий материал, современный крой.',
     type_name='Футболки',
     size_names_list=['XS', 'S', 'M', 'L'],
-    photos='https://via.placeholder.com/400x400/f0f0f0/cccccc?text=Printed+T-shirt'
+    photos='https://images.unsplash.com/photo-1718175900512-480d1fcf282a?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
 )
 
 add_product(
@@ -93,7 +93,7 @@ add_product(
     description='Классические прямые джинсы из плотного денима.',
     type_name='Джинсы',
     size_names_list=['M', 'L', 'XL', 'XXL'],
-    photos='https://via.placeholder.com/400x400/f0f0f0/cccccc?text=Jeans'
+    photos='https://plus.unsplash.com/premium_photo-1673977134363-c86a9d5dcafa?q=80&w=688&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
 )
 
 add_product(
@@ -102,7 +102,7 @@ add_product(
     description='Узкие джинсы с высокой посадкой.',
     type_name='Джинсы',
     size_names_list=['S', 'M', 'L'],
-    photos='https://via.placeholder.com/400x400/f0f0f0/cccccc?text=Skinny+Jeans'
+    photos='https://images.unsplash.com/photo-1584370848010-d7fe6bc767ec?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
 )
 
 add_product(
@@ -111,7 +111,7 @@ add_product(
     description='Лёгкая куртка на весну/осень. Ветрозащитная ткань.',
     type_name='Куртки',
     size_names_list=['M', 'L', 'XL'],
-    photos='https://via.placeholder.com/400x400/f0f0f0/cccccc?text=Jacket'
+    photos='https://plus.unsplash.com/premium_photo-1764091967689-a6ec7a1a6964?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3Dhttps://plus.unsplash.com/premium_photo-1764091967689-a6ec7a1a6964?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
 )
 
 add_product(
@@ -120,7 +120,7 @@ add_product(
     description='Стильная кожаная куртка из экокожи.',
     type_name='Куртки',
     size_names_list=['S', 'M', 'L'],
-    photos='https://via.placeholder.com/400x400/f0f0f0/cccccc?text=Leather+Jacket'
+    photos='https://images.unsplash.com/photo-1727515546577-f7d82a47b51d?q=80&w=736&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
 )
 
 add_product(
@@ -129,7 +129,7 @@ add_product(
     description='Лёгкое платье из натурального хлопка. Идеально для жаркой погоды.',
     type_name='Платья',
     size_names_list=['XS', 'S', 'M', 'L'],
-    photos='https://via.placeholder.com/400x400/f0f0f0/cccccc?text=Dress'
+    photos='https://images.unsplash.com/photo-1746730921745-5f6afa4c56c3?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3Dм'
 )
 
 add_product(
@@ -138,7 +138,7 @@ add_product(
     description='Элегантное вечернее платье.',
     type_name='Платья',
     size_names_list=['S', 'M', 'L', 'XL'],
-    photos='https://via.placeholder.com/400x400/f0f0f0/cccccc?text=Evening+Dress'
+    photos='https://images.unsplash.com/photo-1630412990381-fbbbcf86aa42?q=80&w=1944&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
 )
 
 print("База данных успешно заполнена тестовыми данными!")
